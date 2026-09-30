@@ -12,7 +12,7 @@
       const res = await fetch('/api/resumes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: 'Software Engineer CV' })
+        body: JSON.stringify({ title: 'CV Software Engineer' })
       });
       if (res.ok) {
         const json = await res.json();
@@ -40,7 +40,7 @@
   }
 
   async function handleDelete(id: string, title: string) {
-    if (!confirm(`Hapus resume "${title}"? Tindakan ini permanen.`)) return;
+    if (!confirm(`Hapus resume "${title}"? Tindakan ini tidak dapat dibatalkan.`)) return;
     try {
       const res = await fetch(`/api/resumes/${id}`, { method: 'DELETE' });
       if (res.ok) {
@@ -80,7 +80,7 @@
           {data.user?.email}
         </span>
         <a href="/logout" class="brutal-btn text-xs py-1.5 px-3 flex items-center gap-1.5">
-          <LogOut class="w-3.5 h-3.5" /> LOGOUT
+          <LogOut class="w-3.5 h-3.5" /> KELUAR
         </a>
       </div>
     </div>
@@ -90,8 +90,8 @@
   <main class="max-w-6xl mx-auto px-6 py-10 flex-1 w-full">
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b-4 border-black pb-6 mb-8">
       <div>
-        <h1 class="text-3xl font-black uppercase tracking-tight">MY RESUMES</h1>
-        <p class="text-sm font-semibold text-slate-600 mt-1">Manage, update, and tailor your ATS-compliant CVs</p>
+        <h1 class="text-3xl font-black uppercase tracking-tight">DAFTAR RESUME SAYA</h1>
+        <p class="text-sm font-semibold text-slate-600 mt-1">Kelola, perbarui, dan sesuaikan CV Anda untuk melamar kerja</p>
       </div>
 
       <button
@@ -99,7 +99,7 @@
         disabled={creating}
         class="brutal-btn brutal-btn-accent text-sm py-2.5 px-5 flex items-center gap-2"
       >
-        <Plus class="w-4 h-4" /> {creating ? 'CREATING...' : 'CREATE NEW CV'}
+        <Plus class="w-4 h-4" /> {creating ? 'MEMBUAT...' : 'BUAT CV BARU'}
       </button>
     </div>
 
@@ -109,10 +109,10 @@
         <div class="w-12 h-12 bg-yellow-300 border-2 border-black flex items-center justify-center mx-auto shadow-[3px_3px_0px_#000]">
           <FileText class="w-6 h-6" />
         </div>
-        <h2 class="text-xl font-black uppercase">NO RESUMES FOUND</h2>
-        <p class="text-sm text-slate-600 font-medium">You haven't created any CVs yet. Start building your first ATS-friendly CV now.</p>
+        <h2 class="text-xl font-black uppercase">BELUM ADA CV</h2>
+        <p class="text-sm text-slate-600 font-medium">Anda belum memiliki CV yang disimpan. Mulai buat CV pertama Anda sekarang.</p>
         <button onclick={handleCreateCV} class="brutal-btn brutal-btn-primary text-xs py-2 px-5">
-          + CREATE FIRST CV
+          + BUAT CV PERTAMA
         </button>
       </div>
     {:else}
@@ -135,19 +135,19 @@
 
             <div class="pt-4 border-t-2 border-black flex items-center justify-between gap-2">
               <a href={`/editor/${cv.id}`} class="brutal-btn brutal-btn-primary text-xs py-1.5 px-3 flex-1 flex items-center justify-center gap-1.5">
-                <Edit3 class="w-3.5 h-3.5" /> EDIT
+                <Edit3 class="w-3.5 h-3.5" /> EDIT CV
               </a>
               <button
                 onclick={() => handleDuplicate(cv.id)}
                 class="brutal-btn text-xs py-1.5 px-2.5"
-                title="Duplicate CV"
+                title="Duplikat CV"
               >
                 <Copy class="w-3.5 h-3.5" />
               </button>
               <button
                 onclick={() => handleDelete(cv.id, cv.title)}
                 class="brutal-btn brutal-btn-danger text-xs py-1.5 px-2.5"
-                title="Delete CV"
+                title="Hapus CV"
               >
                 <Trash2 class="w-3.5 h-3.5" />
               </button>

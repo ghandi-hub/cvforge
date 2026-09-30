@@ -57,13 +57,13 @@
       ...cvData.experience,
       {
         id: crypto.randomUUID(),
-        company: 'Company Name',
-        position: 'Role Title',
-        location: 'City, Country',
+        company: 'Nama Perusahaan',
+        position: 'Posisi / Role',
+        location: 'Jakarta, Indonesia',
         startDate: '2024',
-        endDate: 'Present',
+        endDate: 'Sekarang',
         current: true,
-        description: 'Lead development of key microservices...',
+        description: 'Memimpin pengembangan fitur dan arsitektur sistem...',
         achievements: []
       }
     ];
@@ -80,9 +80,9 @@
       ...cvData.education,
       {
         id: crypto.randomUUID(),
-        institution: 'University / College',
-        degree: 'Bachelor of Science',
-        field: 'Computer Science',
+        institution: 'Nama Universitas / Kampus',
+        degree: 'Sarjana Komputer (S.Kom)',
+        field: 'Teknik Informatika',
         startYear: '2020',
         endYear: '2024',
         description: ''
@@ -101,9 +101,9 @@
       ...cvData.projects,
       {
         id: crypto.randomUUID(),
-        name: 'Project Name',
-        description: 'Short overview of the project architecture and impact...',
-        technologies: ['TypeScript', 'SvelteKit'],
+        name: 'Nama Proyek / Aplikasi',
+        description: 'Deskripsi ringkas mengenai solusi dan dampak proyek...',
+        technologies: ['TypeScript', 'SvelteKit', 'MongoDB'],
         url: '',
         repoUrl: ''
       }
@@ -121,8 +121,8 @@
       ...cvData.skills,
       {
         id: crypto.randomUUID(),
-        category: 'Backend / Languages',
-        skills: ['Node.js', 'TypeScript', 'MongoDB']
+        category: 'Bahasa & Framework',
+        skills: ['TypeScript', 'Node.js', 'MongoDB']
       }
     ];
     triggerAutosave();
@@ -196,7 +196,7 @@
           class:bg-red-100={saveStatus === 'error'}
           class:text-red-800={saveStatus === 'error'}
         >
-          {saveStatus === 'saved' ? '✓ SAVED' : saveStatus === 'saving' ? 'SAVING...' : 'SAVE FAILED'}
+          {saveStatus === 'saved' ? '✓ TERSIMPAN' : saveStatus === 'saving' ? 'MENYIMPAN...' : 'GAGAL SIMPAN'}
         </span>
       </div>
 
@@ -208,13 +208,13 @@
           onchange={triggerAutosave}
           class="brutal-input text-xs py-1.5 px-3 font-bold w-auto"
         >
-          <option value="ats-classic">Template: ATS Classic</option>
-          <option value="ats-modern">Template: Modern ATS</option>
-          <option value="ats-brutalist">Template: Brutalist ATS</option>
+          <option value="ats-classic">Template: ATS Klasik</option>
+          <option value="ats-modern">Template: ATS Modern</option>
+          <option value="ats-brutalist">Template: ATS Brutalist</option>
         </select>
 
         <button onclick={exportPrint} class="brutal-btn brutal-btn-accent text-xs py-2 px-4 flex items-center gap-1.5">
-          <Download class="w-4 h-4" /> EXPORT PDF
+          <Download class="w-4 h-4" /> CETAK / UNDUH PDF
         </button>
       </div>
     </div>
@@ -228,7 +228,7 @@
       class:bg-black={activeTab === 'editor'}
       class:text-white={activeTab === 'editor'}
     >
-      [ EDIT ]
+      [ FORM EDIT ]
     </button>
     <button
       onclick={() => (activeTab = 'preview')}
@@ -236,7 +236,7 @@
       class:bg-black={activeTab === 'preview'}
       class:text-white={activeTab === 'preview'}
     >
-      [ PREVIEW ]
+      [ PRATINJAU ]
     </button>
     <button
       onclick={() => (activeTab = 'ats')}
@@ -244,7 +244,7 @@
       class:bg-black={activeTab === 'ats'}
       class:text-white={activeTab === 'ats'}
     >
-      [ ATS SCAN ]
+      [ CEK ATS ]
     </button>
   </div>
 
@@ -259,40 +259,40 @@
       <!-- Personal Info -->
       <div class="brutal-card p-5 bg-white space-y-4">
         <h2 class="font-black text-sm uppercase tracking-wider border-b-2 border-black pb-2 flex items-center gap-2">
-          <FileText class="w-4 h-4" /> PERSONAL INFORMATION
+          <FileText class="w-4 h-4" /> INFORMASI PRIBADI & KONTAK
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="text-[11px] font-bold uppercase block mb-1">Full Name</label>
-            <input type="text" bind:value={cvData.basics.name} oninput={triggerAutosave} placeholder="John Doe" class="brutal-input text-xs" />
+            <label class="text-[11px] font-bold uppercase block mb-1">Nama Lengkap</label>
+            <input type="text" bind:value={cvData.basics.name} oninput={triggerAutosave} placeholder="Budi Santoso" class="brutal-input text-xs" />
           </div>
           <div>
-            <label class="text-[11px] font-bold uppercase block mb-1">Headline</label>
+            <label class="text-[11px] font-bold uppercase block mb-1">Headline / Posisi</label>
             <input type="text" bind:value={cvData.basics.headline} oninput={triggerAutosave} placeholder="Senior Software Engineer" class="brutal-input text-xs" />
           </div>
           <div>
             <label class="text-[11px] font-bold uppercase block mb-1">Email</label>
-            <input type="email" bind:value={cvData.basics.email} oninput={triggerAutosave} placeholder="john@example.com" class="brutal-input text-xs" />
+            <input type="email" bind:value={cvData.basics.email} oninput={triggerAutosave} placeholder="budi@email.com" class="brutal-input text-xs" />
           </div>
           <div>
-            <label class="text-[11px] font-bold uppercase block mb-1">Phone</label>
+            <label class="text-[11px] font-bold uppercase block mb-1">Nomor Telepon / WhatsApp</label>
             <input type="text" bind:value={cvData.basics.phone} oninput={triggerAutosave} placeholder="+62 812 3456 7890" class="brutal-input text-xs" />
           </div>
           <div>
-            <label class="text-[11px] font-bold uppercase block mb-1">Location</label>
+            <label class="text-[11px] font-bold uppercase block mb-1">Domisili / Lokasi</label>
             <input type="text" bind:value={cvData.basics.location} oninput={triggerAutosave} placeholder="Jakarta, Indonesia" class="brutal-input text-xs" />
           </div>
           <div>
-            <label class="text-[11px] font-bold uppercase block mb-1">LinkedIn URL</label>
+            <label class="text-[11px] font-bold uppercase block mb-1">URL LinkedIn</label>
             <input type="text" bind:value={cvData.basics.linkedin} oninput={triggerAutosave} placeholder="https://linkedin.com/in/..." class="brutal-input text-xs" />
           </div>
           <div>
-            <label class="text-[11px] font-bold uppercase block mb-1">GitHub URL</label>
+            <label class="text-[11px] font-bold uppercase block mb-1">URL GitHub</label>
             <input type="text" bind:value={cvData.basics.github} oninput={triggerAutosave} placeholder="https://github.com/..." class="brutal-input text-xs" />
           </div>
           <div>
-            <label class="text-[11px] font-bold uppercase block mb-1">Portfolio / Website</label>
-            <input type="text" bind:value={cvData.basics.website} oninput={triggerAutosave} placeholder="https://mywebsite.com" class="brutal-input text-xs" />
+            <label class="text-[11px] font-bold uppercase block mb-1">Website / Portfolio</label>
+            <input type="text" bind:value={cvData.basics.website} oninput={triggerAutosave} placeholder="https://portofolio-saya.com" class="brutal-input text-xs" />
           </div>
         </div>
       </div>
@@ -300,20 +300,20 @@
       <!-- Professional Summary -->
       <div class="brutal-card p-5 bg-white space-y-3">
         <h2 class="font-black text-sm uppercase tracking-wider border-b-2 border-black pb-2">
-          PROFESSIONAL SUMMARY
+          RINGKASAN PROFESIONAL (SUMMARY)
         </h2>
         <textarea
           bind:value={cvData.summary}
           oninput={triggerAutosave}
           rows="4"
-          placeholder="Concise summary highlighting your background, core technical domain, and achievements..."
+          placeholder="Tulis ringkasan singkat profil Anda, pengalaman inti, spesialisasi teknologi, dan pencapaian utama..."
           class="brutal-input text-xs leading-relaxed"
         ></textarea>
       </div>
 
       <!-- Section Reordering -->
       <div class="brutal-card p-4 bg-yellow-50 border-2 border-black space-y-2">
-        <span class="text-xs font-black uppercase">// SECTION REORDERING</span>
+        <span class="text-xs font-black uppercase">// ATUR URUTAN BAGIAN (SECTION)</span>
         <div class="flex flex-wrap gap-2">
           {#each sectionOrder as sec, idx}
             <div class="flex items-center gap-1 bg-white border border-black px-2 py-1 text-xs font-bold shadow-[2px_2px_0px_#000]">
@@ -328,9 +328,9 @@
       <!-- Experience Section -->
       <div class="brutal-card p-5 bg-white space-y-4">
         <div class="flex justify-between items-center border-b-2 border-black pb-2">
-          <h2 class="font-black text-sm uppercase tracking-wider">WORK EXPERIENCE</h2>
+          <h2 class="font-black text-sm uppercase tracking-wider">PENGALAMAN KERJA</h2>
           <button onclick={addExperience} class="brutal-btn text-xs py-1 px-3 flex items-center gap-1">
-            <Plus class="w-3.5 h-3.5" /> ADD ROLE
+            <Plus class="w-3.5 h-3.5" /> TAMBAH PEKERJAAN
           </button>
         </div>
 
@@ -339,30 +339,30 @@
             <button
               onclick={() => removeExperience(exp.id)}
               class="absolute top-3 right-3 text-red-600 hover:text-red-800"
-              title="Delete Role"
+              title="Hapus Pekerjaan"
             >
               <Trash2 class="w-4 h-4" />
             </button>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pr-8">
               <div>
-                <label class="text-[10px] font-bold uppercase block mb-0.5">Position / Job Title</label>
+                <label class="text-[10px] font-bold uppercase block mb-0.5">Posisi / Jabatan</label>
                 <input type="text" bind:value={exp.position} oninput={triggerAutosave} class="brutal-input text-xs" />
               </div>
               <div>
-                <label class="text-[10px] font-bold uppercase block mb-0.5">Company</label>
+                <label class="text-[10px] font-bold uppercase block mb-0.5">Nama Perusahaan</label>
                 <input type="text" bind:value={exp.company} oninput={triggerAutosave} class="brutal-input text-xs" />
               </div>
               <div>
-                <label class="text-[10px] font-bold uppercase block mb-0.5">Start Date</label>
-                <input type="text" bind:value={exp.startDate} oninput={triggerAutosave} placeholder="e.g. Jan 2022" class="brutal-input text-xs" />
+                <label class="text-[10px] font-bold uppercase block mb-0.5">Tanggal Mulai</label>
+                <input type="text" bind:value={exp.startDate} oninput={triggerAutosave} placeholder="contoh: Jan 2022" class="brutal-input text-xs" />
               </div>
               <div>
-                <label class="text-[10px] font-bold uppercase block mb-0.5">End Date</label>
-                <input type="text" bind:value={exp.endDate} oninput={triggerAutosave} placeholder="e.g. Present" class="brutal-input text-xs" />
+                <label class="text-[10px] font-bold uppercase block mb-0.5">Tanggal Berakhir</label>
+                <input type="text" bind:value={exp.endDate} oninput={triggerAutosave} placeholder="contoh: Sekarang" class="brutal-input text-xs" />
               </div>
             </div>
             <div>
-              <label class="text-[10px] font-bold uppercase block mb-0.5">Description & Key Contributions</label>
+              <label class="text-[10px] font-bold uppercase block mb-0.5">Deskripsi Tanggung Jawab & Kontribusi</label>
               <textarea
                 bind:value={exp.description}
                 oninput={triggerAutosave}
@@ -377,9 +377,9 @@
       <!-- Skills Section -->
       <div class="brutal-card p-5 bg-white space-y-4">
         <div class="flex justify-between items-center border-b-2 border-black pb-2">
-          <h2 class="font-black text-sm uppercase tracking-wider">SKILLS & TECHNOLOGIES</h2>
+          <h2 class="font-black text-sm uppercase tracking-wider">KEAHLIAN & TEKNOLOGI (SKILLS)</h2>
           <button onclick={addSkillCategory} class="brutal-btn text-xs py-1 px-3 flex items-center gap-1">
-            <Plus class="w-3.5 h-3.5" /> ADD CATEGORY
+            <Plus class="w-3.5 h-3.5" /> TAMBAH KATEGORI
           </button>
         </div>
 
@@ -392,11 +392,11 @@
               <Trash2 class="w-3.5 h-3.5" />
             </button>
             <div class="pr-8">
-              <label class="text-[10px] font-bold uppercase block mb-0.5">Category Name</label>
-              <input type="text" bind:value={cat.category} oninput={triggerAutosave} placeholder="e.g. Languages & Frameworks" class="brutal-input text-xs" />
+              <label class="text-[10px] font-bold uppercase block mb-0.5">Nama Kategori</label>
+              <input type="text" bind:value={cat.category} oninput={triggerAutosave} placeholder="contoh: Backend & Database" class="brutal-input text-xs" />
             </div>
             <div>
-              <label class="text-[10px] font-bold uppercase block mb-0.5">Skills (separated by comma)</label>
+              <label class="text-[10px] font-bold uppercase block mb-0.5">Daftar Keahlian (pisahkan dengan koma)</label>
               <input
                 type="text"
                 value={cat.skills.join(', ')}
@@ -404,7 +404,7 @@
                   cat.skills = e.target.value.split(',').map((s: string) => s.trim()).filter(Boolean);
                   triggerAutosave();
                 }}
-                placeholder="TypeScript, React, Node.js, Docker"
+                placeholder="TypeScript, Node.js, Express, MongoDB, Docker"
                 class="brutal-input text-xs"
               />
             </div>
@@ -415,9 +415,9 @@
       <!-- Projects Section -->
       <div class="brutal-card p-5 bg-white space-y-4">
         <div class="flex justify-between items-center border-b-2 border-black pb-2">
-          <h2 class="font-black text-sm uppercase tracking-wider">PROJECTS</h2>
+          <h2 class="font-black text-sm uppercase tracking-wider">PROYEK / PORTOFOLIO</h2>
           <button onclick={addProject} class="brutal-btn text-xs py-1 px-3 flex items-center gap-1">
-            <Plus class="w-3.5 h-3.5" /> ADD PROJECT
+            <Plus class="w-3.5 h-3.5" /> TAMBAH PROYEK
           </button>
         </div>
 
@@ -428,11 +428,11 @@
             </button>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pr-8">
               <div>
-                <label class="text-[10px] font-bold uppercase block mb-0.5">Project Name</label>
+                <label class="text-[10px] font-bold uppercase block mb-0.5">Nama Proyek</label>
                 <input type="text" bind:value={proj.name} oninput={triggerAutosave} class="brutal-input text-xs" />
               </div>
               <div>
-                <label class="text-[10px] font-bold uppercase block mb-0.5">Technologies Used</label>
+                <label class="text-[10px] font-bold uppercase block mb-0.5">Teknologi yang Digunakan</label>
                 <input
                   type="text"
                   value={proj.technologies.join(', ')}
@@ -445,7 +445,7 @@
               </div>
             </div>
             <div>
-              <label class="text-[10px] font-bold uppercase block mb-0.5">Project Description</label>
+              <label class="text-[10px] font-bold uppercase block mb-0.5">Deskripsi Proyek</label>
               <textarea bind:value={proj.description} oninput={triggerAutosave} rows="2" class="brutal-input text-xs"></textarea>
             </div>
           </div>
@@ -455,9 +455,9 @@
       <!-- Education Section -->
       <div class="brutal-card p-5 bg-white space-y-4">
         <div class="flex justify-between items-center border-b-2 border-black pb-2">
-          <h2 class="font-black text-sm uppercase tracking-wider">EDUCATION</h2>
+          <h2 class="font-black text-sm uppercase tracking-wider">RIWAYAT PENDIDIKAN</h2>
           <button onclick={addEducation} class="brutal-btn text-xs py-1 px-3 flex items-center gap-1">
-            <Plus class="w-3.5 h-3.5" /> ADD EDUCATION
+            <Plus class="w-3.5 h-3.5" /> TAMBAH PENDIDIKAN
           </button>
         </div>
 
@@ -468,19 +468,19 @@
             </button>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pr-8">
               <div>
-                <label class="text-[10px] font-bold uppercase block mb-0.5">Institution</label>
+                <label class="text-[10px] font-bold uppercase block mb-0.5">Nama Institusi / Universitas</label>
                 <input type="text" bind:value={edu.institution} oninput={triggerAutosave} class="brutal-input text-xs" />
               </div>
               <div>
-                <label class="text-[10px] font-bold uppercase block mb-0.5">Degree & Field</label>
-                <input type="text" bind:value={edu.degree} oninput={triggerAutosave} placeholder="B.Sc. in Computer Science" class="brutal-input text-xs" />
+                <label class="text-[10px] font-bold uppercase block mb-0.5">Gelar & Jurusan</label>
+                <input type="text" bind:value={edu.degree} oninput={triggerAutosave} placeholder="S.Kom - Teknik Informatika" class="brutal-input text-xs" />
               </div>
               <div>
-                <label class="text-[10px] font-bold uppercase block mb-0.5">Start Year</label>
+                <label class="text-[10px] font-bold uppercase block mb-0.5">Tahun Masuk</label>
                 <input type="text" bind:value={edu.startYear} oninput={triggerAutosave} class="brutal-input text-xs" />
               </div>
               <div>
-                <label class="text-[10px] font-bold uppercase block mb-0.5">End Year (or Expected)</label>
+                <label class="text-[10px] font-bold uppercase block mb-0.5">Tahun Lulus (atau Ekspektasi)</label>
                 <input type="text" bind:value={edu.endYear} oninput={triggerAutosave} class="brutal-input text-xs" />
               </div>
             </div>
@@ -498,14 +498,14 @@
           class="brutal-btn text-xs py-1.5 px-4"
           class:brutal-btn-primary={activeTab !== 'ats'}
         >
-          <Eye class="w-3.5 h-3.5 mr-1" /> LIVE PREVIEW
+          <Eye class="w-3.5 h-3.5 mr-1" /> PRATINJAU DOKUMEN
         </button>
         <button
           onclick={() => (activeTab = 'ats')}
           class="brutal-btn text-xs py-1.5 px-4"
           class:brutal-btn-primary={activeTab === 'ats'}
         >
-          <Search class="w-3.5 h-3.5 mr-1" /> ATS KEYWORD ANALYZER
+          <Search class="w-3.5 h-3.5 mr-1" /> ANALYZER KATA KUNCI ATS
         </button>
       </div>
 
@@ -515,8 +515,8 @@
         class:hidden={activeTab === 'ats'}
       >
         <div class="bg-black text-white px-4 py-2 font-mono text-xs font-bold flex justify-between items-center no-print">
-          <span>DOCUMENT_PREVIEW // {selectedTemplate.toUpperCase()}</span>
-          <span class="text-slate-400">A4 • 100% SCALE</span>
+          <span>PRATINJAU_CV // {selectedTemplate.toUpperCase()}</span>
+          <span class="text-slate-400">STANDAR A4</span>
         </div>
         <CvRenderer data={cvData} template={selectedTemplate} {sectionOrder} />
       </div>
@@ -528,19 +528,19 @@
       >
         <div class="border-b-2 border-black pb-3">
           <h2 class="font-black text-lg uppercase flex items-center gap-2">
-            <Search class="w-5 h-5 text-blue-600" /> ATS KEYWORD SCANNER
+            <Search class="w-5 h-5 text-blue-600" /> PEMINDAI KATA KUNCI ATS
           </h2>
           <p class="text-xs text-slate-600 font-medium mt-1">
-            Paste the target Job Description below. We'll cross-reference the required technical skills against your CV.
+            Salin teks kualifikasi/deskripsi pekerjaan yang ingin Anda lamar. Sistem akan memvalidasi apakah kata kunci teknis tersebut sudah ada di CV Anda.
           </p>
         </div>
 
         <div>
-          <label class="text-xs font-black uppercase block mb-1">JOB DESCRIPTION TEXT</label>
+          <label class="text-xs font-black uppercase block mb-1">TEKS JOB DESCRIPTION</label>
           <textarea
             bind:value={jobDescription}
             rows="6"
-            placeholder="Paste complete Job Description requirements here..."
+            placeholder="Tempel seluruh teks persyaratan pekerjaan di sini..."
             class="brutal-input text-xs leading-relaxed font-mono"
           ></textarea>
           <button
@@ -549,9 +549,9 @@
             class="brutal-btn brutal-btn-accent w-full text-xs py-2.5 mt-3 flex items-center justify-center gap-2"
           >
             {#if isAnalyzing}
-              <RefreshCw class="w-4 h-4 animate-spin" /> SCANNING KEYWORDS...
+              <RefreshCw class="w-4 h-4 animate-spin" /> MEMINDAI KATA KUNCI...
             {:else}
-              <Search class="w-4 h-4" /> ANALYZE KEYWORD MATCH
+              <Search class="w-4 h-4" /> ANALISIS KECOCOKAN KATA KUNCI
             {/if}
           </button>
         </div>
@@ -560,8 +560,8 @@
           <div class="space-y-4 border-t-2 border-black pt-4">
             <div class="flex justify-between items-center bg-slate-100 p-4 border-2 border-black">
               <div>
-                <span class="text-xs font-mono font-bold text-slate-500 uppercase">KEYWORD MATCH SCORE</span>
-                <div class="text-2xl font-black text-slate-900 mt-0.5">{atsReport.scorePercentage}% MATCH</div>
+                <span class="text-xs font-mono font-bold text-slate-500 uppercase">SKOR KECOCOKAN KEYWORD</span>
+                <div class="text-2xl font-black text-slate-900 mt-0.5">{atsReport.scorePercentage}% COCOK</div>
               </div>
               <div class="w-12 h-12 bg-white border-2 border-black flex items-center justify-center font-black text-lg">
                 {atsReport.foundKeywords.length}/{atsReport.foundKeywords.length + atsReport.missingKeywords.length}
@@ -571,7 +571,7 @@
             <!-- Found Keywords -->
             <div class="border-2 border-black p-3 bg-emerald-50">
               <span class="text-xs font-black uppercase text-emerald-950 flex items-center gap-1.5 mb-2">
-                <CheckCircle2 class="w-4 h-4 text-emerald-600" /> KEYWORDS FOUND IN CV ({atsReport.foundKeywords.length})
+                <CheckCircle2 class="w-4 h-4 text-emerald-600" /> KATA KUNCI DITEMUKAN PADA CV ({atsReport.foundKeywords.length})
               </span>
               <div class="flex flex-wrap gap-1.5">
                 {#each atsReport.foundKeywords as kw}
@@ -586,10 +586,10 @@
             {#if atsReport.missingKeywords.length > 0}
               <div class="border-2 border-black p-3 bg-rose-50">
                 <span class="text-xs font-black uppercase text-rose-950 flex items-center gap-1.5 mb-2">
-                  <AlertTriangle class="w-4 h-4 text-rose-600" /> KEYWORDS MISSING FROM CV ({atsReport.missingKeywords.length})
+                  <AlertTriangle class="w-4 h-4 text-rose-600" /> KATA KUNCI BELUM ADA DI CV ({atsReport.missingKeywords.length})
                 </span>
                 <p class="text-[11px] text-slate-600 font-medium mb-2">
-                  Consider incorporating these skills into your Experience or Skills section if you have relevant proficiency:
+                  Pertimbangkan untuk menambahkan keahlian ini ke dalam deskripsi pekerjaan atau daftar skill Anda jika memang memiliki kompetensi tersebut:
                 </p>
                 <div class="flex flex-wrap gap-1.5">
                   {#each atsReport.missingKeywords as kw}
@@ -603,30 +603,30 @@
 
             <!-- Structure Checklist -->
             <div class="border-2 border-black p-3 bg-slate-50 space-y-1.5 text-xs font-bold">
-              <span class="text-slate-500 uppercase block mb-1">// STRUCTURE AUDIT</span>
+              <span class="text-slate-500 uppercase block mb-1">// PEMERIKSAAN STRUKTUR DOKUMEN</span>
               <div class="flex items-center gap-2">
                 <span class={atsReport.structureCheck.hasContactInfo ? 'text-emerald-600' : 'text-rose-600'}>
                   {atsReport.structureCheck.hasContactInfo ? '✓' : '×'}
                 </span>
-                <span>Contact details (Email / Phone)</span>
+                <span>Informasi kontak lengkap (Email / Nomor Telepon)</span>
               </div>
               <div class="flex items-center gap-2">
                 <span class={atsReport.structureCheck.hasExperience ? 'text-emerald-600' : 'text-rose-600'}>
                   {atsReport.structureCheck.hasExperience ? '✓' : '×'}
                 </span>
-                <span>Work experience entries</span>
+                <span>Daftar pengalaman kerja</span>
               </div>
               <div class="flex items-center gap-2">
                 <span class={atsReport.structureCheck.hasEducation ? 'text-emerald-600' : 'text-rose-600'}>
                   {atsReport.structureCheck.hasEducation ? '✓' : '×'}
                 </span>
-                <span>Education credentials</span>
+                <span>Kredensial riwayat pendidikan</span>
               </div>
               <div class="flex items-center gap-2">
                 <span class={atsReport.structureCheck.hasSkills ? 'text-emerald-600' : 'text-rose-600'}>
                   {atsReport.structureCheck.hasSkills ? '✓' : '×'}
                 </span>
-                <span>Technical skill matrix</span>
+                <span>Matriks keahlian & teknologi</span>
               </div>
             </div>
           </div>
