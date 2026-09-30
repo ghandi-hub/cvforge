@@ -183,7 +183,7 @@
   }
 </script>
 
-<div class="min-h-screen flex flex-col bg-slate-100 overflow-x-hidden">
+<div class="cv-app-ui min-h-screen flex flex-col bg-slate-100 overflow-x-hidden">
   <!-- Top Editor Navbar -->
   <header class="border-b-4 border-black bg-white px-3 sm:px-4 py-3 sticky top-0 z-50 no-print">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:flex-wrap md:justify-between md:items-center gap-2 md:gap-3">
@@ -644,4 +644,13 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- ============================================================
+     Salinan dokumen CV khusus cetak (ukuran A4 asli, tanpa penskalaan).
+     Selalu ada di DOM tapi tersembunyi di layar; hanya ini yang tercetak,
+     sehingga hasil PDF tidak bergantung pada tab yang sedang aktif.
+     ============================================================ -->
+<div class="cv-print-root" aria-hidden="true">
+  <CvRenderer data={cvData} template={selectedTemplate} {sectionOrder} staticSize />
 </div>
