@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import type { CVData, SectionType } from '$lib/types/cv';
   import AtsClassic from './templates/AtsClassic.svelte';
   import AtsModern from './templates/AtsModern.svelte';
@@ -13,18 +14,68 @@
     template?: string;
     sectionOrder?: SectionType[];
   } = $props();
+
+  // A4 dokumen lebar = 794px (210mm @96dpi)
+  const A4_WIDTH = 794;
+
+  let wrapperEl: HTMLDivElement;
+  let docEl: HTMLDivElement;
+  let scale = $state(1);
+  let docHeight = $state(1123); // A4 height default
+
+  function updateScale() {
+    if (!wrapperEl || !docEl) return;
+    const avail = wrapperEl.clientWidth - 32; // padding kiri-kanan
+    const s = Math.min(1, avail / A4_WIDTH);
+    scale = s > 0 ? s : 1;
+    docHeight = docEl.scrollHeight;
+  }
+
+  onMount(() => {
+    updateScale();
+    const roWrapper = new ResizeObserver(() => updateScale());
+    const roDoc = new ResizeObserver(() => updateScale());
+    roWrapper.observe(wrapperEl);
+    roDoc.observe(docEl);
+    return () => {
+      roWrapper.disconnect();
+      roDoc.disconnect();
+    };
+  });
+
+  // Re-scale saat konten/template berubah
+  $effect(() => {
+    void data;
+    void template;
+    void sectionOrder;
+    // tunggu render selesai
+    requestAnimationFrame(() => updateScale());
+  });
 </script>
 
-<div class="cv-preview-wrapper w-full overflow-x-auto p-4 flex justify-center bg-slate-200/50 min-h-[500px]">
-  <div class="shadow-2xl border border-slate-300">
-    {#if template === 'ats-classic'}
-      <AtsClassic {data} {sectionOrder} />
-    {:else if template === 'ats-modern'}
-      <AtsModern {data} {sectionOrder} />
-    {:else if template === 'ats-brutalist'}
-      <AtsBrutalist {data} {sectionOrder} />
-    {:else}
-      <AtsClassic {data} {sectionOrder} />
-    {/if}
+<div
+  class="cv-preview-wrapper w-full overflow-x-hidden p-4 bg-slate-200/50"
+  bind:this={wrapperEl}
+>
+  <!-- Kanvas A4 yang diskalakan proporsional sesuai lebar layar -->
+  <div
+    class="relative mx-auto shadow-2xl border border-slate-300 bg-white"
+    style="width: {A4_WIDTH * scale}px; height: {docHeight * scale}px;"
+  >
+    <div
+      class="absolute top-0 left-0"
+      style="width: {A4_WIDTH}px; transform: scale({scale}); transform-origin: top left;"
+      bind:this={docEl}
+    >
+      {#if template === 'ats-classic'}
+        <AtsClassic {data} {sectionOrder} />
+      {:else if template === 'ats-modern'}
+        <AtsModern {data} {sectionOrder} />
+      {:else if template === 'ats-brutalist'}
+        <AtsBrutalist {data} {sectionOrder} />
+      {:else}
+        <AtsClassic {data} {sectionOrder} />
+      {/if}
+    </div>
   </div>
 </div>

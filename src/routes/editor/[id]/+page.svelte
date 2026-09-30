@@ -174,21 +174,21 @@
   }
 </script>
 
-<div class="min-h-screen flex flex-col bg-slate-100">
+<div class="min-h-screen flex flex-col bg-slate-100 overflow-x-hidden">
   <!-- Top Editor Navbar -->
-  <header class="border-b-4 border-black bg-white px-4 py-3 sticky top-0 z-50 no-print">
-    <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-3">
-      <div class="flex items-center gap-3">
-        <a href="/dashboard" class="brutal-btn text-xs py-1.5 px-2.5" title="Kembali ke Dashboard">
+  <header class="border-b-4 border-black bg-white px-3 sm:px-4 py-3 sticky top-0 z-50 no-print">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:flex-wrap md:justify-between md:items-center gap-2 md:gap-3">
+      <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+        <a href="/dashboard" class="brutal-btn text-xs py-1.5 px-2.5 shrink-0" title="Kembali ke Dashboard">
           <ArrowLeft class="w-4 h-4" />
         </a>
         <input
           type="text"
           bind:value={resume.title}
           oninput={triggerAutosave}
-          class="font-black text-lg uppercase bg-transparent border-b-2 border-transparent hover:border-black focus:border-black outline-none px-1"
+          class="font-black text-base sm:text-lg uppercase bg-transparent border-b-2 border-transparent hover:border-black focus:border-black outline-none px-1 min-w-0 flex-1"
         />
-        <span class="text-[11px] font-mono font-bold px-2 py-0.5 border border-black rounded-full"
+        <span class="text-[10px] sm:text-[11px] font-mono font-bold px-2 py-0.5 border border-black rounded-full whitespace-nowrap shrink-0"
           class:bg-emerald-100={saveStatus === 'saved'}
           class:text-emerald-800={saveStatus === 'saved'}
           class:bg-yellow-100={saveStatus === 'saving'}
@@ -201,20 +201,20 @@
       </div>
 
       <!-- Action Toolbar -->
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 flex-wrap w-full md:w-auto">
         <!-- Template Picker -->
         <select
           bind:value={selectedTemplate}
           onchange={triggerAutosave}
-          class="brutal-input text-xs py-1.5 px-3 font-bold w-auto"
+          class="brutal-input text-xs py-1.5 px-3 font-bold w-auto min-w-0 flex-1 md:flex-none"
         >
           <option value="ats-classic">Template: ATS Klasik</option>
           <option value="ats-modern">Template: ATS Modern</option>
           <option value="ats-brutalist">Template: ATS Brutalist</option>
         </select>
 
-        <button onclick={exportPrint} class="brutal-btn brutal-btn-accent text-xs py-2 px-4 flex items-center gap-1.5">
-          <Download class="w-4 h-4" /> CETAK / UNDUH PDF
+        <button onclick={exportPrint} class="brutal-btn brutal-btn-accent text-xs py-2 px-3 sm:px-4 flex items-center gap-1.5 whitespace-nowrap">
+          <Download class="w-4 h-4" /> <span class="hidden xs:inline sm:inline">CETAK / </span>PDF
         </button>
       </div>
     </div>
@@ -512,11 +512,12 @@
       <!-- Preview Panel -->
       <div
         class="border-4 border-black bg-white shadow-[6px_6px_0px_#000] overflow-hidden"
-        class:hidden={activeTab === 'ats'}
+        class:hidden={activeTab !== 'preview'}
+        class:lg:block={activeTab !== 'ats'}
       >
-        <div class="bg-black text-white px-4 py-2 font-mono text-xs font-bold flex justify-between items-center no-print">
-          <span>PRATINJAU_CV // {selectedTemplate.toUpperCase()}</span>
-          <span class="text-slate-400">STANDAR A4</span>
+        <div class="bg-black text-white px-3 sm:px-4 py-2 font-mono text-[10px] sm:text-xs font-bold flex justify-between items-center gap-2 no-print">
+          <span class="truncate">PRATINJAU // {selectedTemplate.toUpperCase()}</span>
+          <span class="text-slate-400 shrink-0">A4</span>
         </div>
         <CvRenderer data={cvData} template={selectedTemplate} {sectionOrder} />
       </div>
