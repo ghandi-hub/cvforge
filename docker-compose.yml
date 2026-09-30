@@ -16,6 +16,7 @@ services:
       - AUTH_SECRET=${AUTH_SECRET:-cvforge-production-super-secret-key-min-32-chars-long-12345}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - ORIGIN=${ORIGIN:-http://localhost:3001}
       - PUBLIC_APP_URL=${PUBLIC_APP_URL:-http://localhost:3001}
     env_file:
       - path: .env
