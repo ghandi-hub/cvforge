@@ -169,8 +169,17 @@
     }
   }
 
+  // Cetak / ekspor PDF: pakai kelas penanda agar CSS print hanya mengeluarkan dokumen CV
   function exportPrint() {
+    document.body.classList.add('printing-cv');
+    const cleanup = () => {
+      document.body.classList.remove('printing-cv');
+      window.removeEventListener('afterprint', cleanup);
+    };
+    window.addEventListener('afterprint', cleanup);
     window.print();
+    // Fallback untuk browser yang tidak memicu afterprint
+    setTimeout(cleanup, 2000);
   }
 </script>
 

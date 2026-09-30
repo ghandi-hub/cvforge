@@ -63,7 +63,7 @@
     style="width: {A4_WIDTH * scale}px; height: {docHeight * scale}px;"
   >
     <div
-      class="absolute top-0 left-0"
+      class="cv-print-area absolute top-0 left-0"
       style="width: {A4_WIDTH}px; transform: scale({scale}); transform-origin: top left;"
       bind:this={docEl}
     >

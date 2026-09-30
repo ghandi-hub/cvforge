@@ -1,0 +1,96 @@
+/* ==========================================================================
+   CVForge — Aturan cetak / ekspor PDF
+   Tujuan: hasil PDF PERSIS seperti pratinjau A4 (210mm), tanpa UI aplikasi,
+   tanpa penskalaan layar, dan tanpa halaman kosong tambahan.
+   ========================================================================== */
+
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
+@media print {
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 210mm !important;
+    background: #ffffff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Saat mencetak CV: sembunyikan SELURUH UI, tampilkan hanya dokumen CV */
+  body.printing-cv * {
+    visibility: hidden !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+  }
+
+  body.printing-cv .cv-print-area,
+  body.printing-cv .cv-print-area * {
+    visibility: visible !important;
+  }
+
+  /* Batalkan penskalaan responsif — cetak selalu ukuran A4 asli */
+  body.printing-cv .cv-print-area {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    transform: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+  }
+
+  /* Netralkan seluruh pembungkus pratinjau (kartu berskala, padding, border) */
+  body.printing-cv .cv-preview-wrapper,
+  body.printing-cv .cv-preview-wrapper > div {
+    position: static !important;
+    width: auto !important;
+    max-width: none !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    transform: none !important;
+    background: transparent !important;
+  }
+
+  /* Dokumen template di dalamnya juga tanpa skala & tanpa batas lebar */
+  body.printing-cv .cv-print-area > * {
+    width: 210mm !important;
+    max-width: 210mm !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    transform: none !important;
+    border-radius: 0 !important;
+  }
+
+  /* Hindari terpotong di tengah blok */
+  body.printing-cv .cv-print-area section,
+  body.printing-cv .cv-print-area li {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  body.printing-cv .cv-print-area h1,
+  body.printing-cv .cv-print-area h2 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /* Tautan tetap terbaca sebagai teks hitam rapi */
+  body.printing-cv .cv-print-area a {
+    color: #000000 !important;
+    text-decoration: none !important;
+  }
+
+  /* Elemen UI bertanda no-print tidak pernah ikut tercetak */
+  .no-print {
+    display: none !important;
+  }
+}
