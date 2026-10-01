@@ -30,16 +30,30 @@
   }
 
   /* ============================================================
-     1. CETAK CV DOKUMEN
+     0. Saling-eksklusi: sembunyikan SEMUA salinan cetak lebih dulu.
+     Tanpa ini kedua salinan (CV + Surat) ikut tercetak sekaligus.
      ============================================================ */
-  /* Sembunyikan seluruh UI aplikasi (header, tab, form, panel ATS) */
+  .cv-print-root,
+  .cl-print-root {
+    display: none !important;
+  }
+
+  /* ============================================================
+     1. CETAK CV DOKUMEN (body.printing-cv)
+     ============================================================ */
+  /* Sembunyikan seluruh UI aplikasi (header, tab, form, panel ATS, overlay mobile) */
   body.printing-cv .cv-app-ui {
     display: none !important;
   }
 
-  /* Tampilkan hanya salinan dokumen CV */
+  /* Hanya salinan dokumen CV yang tampil */
   body.printing-cv .cv-print-root {
     display: block !important;
+  }
+
+  /* Pastikan salinan surat lamaran tidak ikut tercetak */
+  body.printing-cv .cl-print-root {
+    display: none !important;
   }
 
   /* Netralkan pembungkus salinan cetak */
@@ -98,7 +112,7 @@
   }
 
   /* ============================================================
-     2. CETAK SURAT LAMARAN (COVER LETTER)
+     2. CETAK SURAT LAMARAN (COVER LETTER) (body.printing-cl)
      ============================================================ */
   body.printing-cl .cv-app-ui {
     display: none !important;
@@ -106,6 +120,11 @@
 
   body.printing-cl .cl-print-root {
     display: block !important;
+  }
+
+  /* Pastikan salinan CV tidak ikut tercetak */
+  body.printing-cl .cv-print-root {
+    display: none !important;
   }
 
   body.printing-cl .cl-print-root .cl-preview-wrapper {
