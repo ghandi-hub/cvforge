@@ -1,6 +1,6 @@
-# CVForge — ATS CV Builder
+# CVForge — ATS CV Builder & Cover Letter Generator
 
-Aplikasi pembuat Curriculum Vitae (CV) berbasis web yang berfokus pada keterbacaan Applicant Tracking System (ATS), data terstruktur, dan analisis kecocokan kata kunci Job Description secara deterministik.
+Aplikasi pembuat Curriculum Vitae (CV) dan Surat Lamaran (Cover Letter) berbasis web yang berfokus pada keterbacaan Applicant Tracking System (ATS), data terstruktur, dan analisis kecocokan kata kunci Job Description secara deterministik.
 
 Menggunakan visual style **Neo-Brutalism**: layout tegas, kontras tinggi, border tebal, hard shadow, dan fungsional.
 
@@ -17,16 +17,20 @@ Menggunakan visual style **Neo-Brutalism**: layout tegas, kontras tinggi, border
   - Input Job Description dari lowongan pekerjaan.
   - Normalisasi teks dan ekstraksi kata kunci teknis berbasis kamus (bahasa pemrograman, framework, database, cloud, devops, tools).
   - Evaluasi kecocokan keyword terhadap isi CV (*FOUND* vs *MISSING*).
-  - Audit struktur dokumen (kontak, pengalaman, pendidikan, skill).
+  - Audit kelengkapan struktur dokumen (kontak, pengalaman, pendidikan, skill).
 - **Cover Letter Generator Terintegrasi**:
-  - Menyusun surat lamaran profesional secara instan dari profil CV (pengalaman terbaru, proyek unggulan, keahlian utama) dan target perusahaan/role.
+  - Menyusun surat lamaran profesional secara instan tersinkronisasi dari profil CV (pengalaman terbaru, proyek unggulan, keahlian utama) dan target perusahaan/role.
   - 3 pilihan nada bahasa: Formal (BUMN/Korporat), Modern (Startup/Tech), dan Professional English (Global ATS).
   - Editor teks interaktif dengan live autosave ke database dan tombol salin ke clipboard.
   - Pratinjau A4 responsif dan ekspor cetak PDF mandiri berstandar 1:1.
-- **Ekspor PDF Siap Cetak (A4 Standard)**:
-  - Output A4 proporsional dengan selectable text (bukan screenshot).
-  - Menggunakan engine cetak terisolasi (`print root`), hasil cetak tetap lengkap dari tab mana pun (Form Edit, Cek ATS, atau Pratinjau).
+- **Ekspor PDF Terisolasi & Saling-Eksklusif (A4 Standard)**:
+  - Output A4 proporsional dengan selectable text (bukan screenshot raster).
+  - Menggunakan engine cetak terisolasi (`print root`), cetak CV hanya mengeluarkan dokumen CV, dan cetak Surat Lamaran hanya mengeluarkan surat lamaran.
   - Dilengkapi CSS print hardening (`@page`, `break-inside: avoid`).
+- **UI Responsif Mobile-Optimized**:
+  - Tampilan mobile ramping dengan navigasi 3 tab: `[ FORM CV ]`, `[ SURAT ]`, dan `[ ATS ]`.
+  - Floating action button untuk akses cepat pratinjau A4 dan ekspor PDF.
+  - Fullscreen overlay pratinjau dokumen di layar kecil tanpa merusak layout form.
 - **Autosave & Section Reordering**:
   - Autosave otomatis dengan mekanisme debouncing.
   - Fitur ubah urutan section (naik/turun) yang tersimpan ke database.
@@ -143,25 +147,27 @@ Aplikasi default berjalan di port host `3001` (diteruskan ke port container `300
 cvforge/
 ├── src/
 │   ├── lib/
-│   │   ├── ats/             # Logika scanner keyword & normalisasi teks
-│   │   ├── components/      # Komponen UI & template CV
-│   │   │   ├── templates/   # Template ATS (Classic, Modern, Brutalist)
-│   │   │   └── CvRenderer   # Engine rendering pratinjau & salinan cetak A4
-│   │   ├── server/          # Koneksi DB, session helper, & CRUD resume
-│   │   ├── types/           # Skema Zod & tipe data TypeScript
-│   │   └── print.css        # Stylesheet isolasi cetak / ekspor PDF
+│   │   ├── ats/                   # Logika scanner keyword & normalisasi teks
+│   │   ├── cover-letter/          # Mesin generator narasi surat lamaran
+│   │   ├── components/            # Komponen UI & template
+│   │   │   ├── templates/         # Template ATS (Classic, Modern, Brutalist)
+│   │   │   ├── CvRenderer.svelte  # Engine rendering pratinjau & salinan cetak CV A4
+│   │   │   └── CoverLetterRenderer.svelte # Engine rendering surat lamaran A4
+│   │   ├── server/                # Koneksi DB, session helper, & CRUD resume
+│   │   ├── types/                 # Skema Zod & tipe data TypeScript
+│   │   └── print.css              # Stylesheet isolasi cetak / ekspor PDF
 │   ├── routes/
-│   │   ├── +page.svelte     # Landing page publik
-│   │   ├── login/           # Halaman autentikasi
-│   │   ├── dashboard/       # Manajemen daftar resume pengguna
-│   │   ├── editor/[id]/     # Editor form, live preview, & ATS analyzer
-│   │   ├── auth/google/     # Endpoint OAuth flow & callback
-│   │   └── api/             # REST endpoint (resumes CRUD & ATS scanner)
-│   ├── app.css              # Setup Tailwind & token desain Neo-Brutalism
-│   └── hooks.server.ts      # Session validation & security headers
-├── Dockerfile               # Multi-stage Bun build
-├── docker-compose.yml       # Orkestrasi container
-└── .env.example             # Template konfigurasi environment
+│   │   ├── +page.svelte           # Landing page publik
+│   │   ├── login/                 # Halaman autentikasi
+│   │   ├── dashboard/             # Manajemen daftar resume pengguna
+│   │   ├── editor/[id]/           # Editor form, live preview, cover letter, & ATS analyzer
+│   │   ├── auth/google/           # Endpoint OAuth flow & callback
+│   │   └── api/                   # REST endpoint (resumes CRUD, cover-letter, & ATS scanner)
+│   ├── app.css                    # Setup Tailwind & token desain Neo-Brutalism
+│   └── hooks.server.ts            # Session validation & security headers
+├── Dockerfile                     # Multi-stage Bun build
+├── docker-compose.yml             # Orkestrasi container
+└── .env.example                   # Template konfigurasi environment
 ```
 
 ---
