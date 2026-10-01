@@ -25,8 +25,8 @@
       content: ''
     }
   );
-  let activeTab = $state<'editor' | 'preview' | 'cover-letter' | 'ats'>('editor');
-  let clMobileSubTab = $state<'form' | 'preview'>('form');
+  let activeTab = $state<'editor' | 'cover-letter' | 'ats'>('editor');
+  let previewModal = $state<'none' | 'cv' | 'cover-letter'>('none');
   let copySuccess = $state(false);
   let saveStatus = $state<'saved' | 'saving' | 'error'>('saved');
   let selectedTemplate = $state(resume.template || 'ats-classic');
@@ -294,27 +294,19 @@
     </div>
   </header>
 
-  <!-- Mobile View Toggle Tabs (4 Tab) -->
-  <div class="lg:hidden grid grid-cols-4 border-b-2 border-black bg-white no-print">
+  <!-- Mobile View Toggle Tabs (3 Tab: CV, Surat, ATS) -->
+  <div class="lg:hidden grid grid-cols-3 border-b-2 border-black bg-white no-print">
     <button
       onclick={() => (activeTab = 'editor')}
-      class="py-3 text-center text-[10px] sm:text-xs font-black uppercase border-r border-black"
+      class="py-3 text-center text-[11px] font-black uppercase border-r border-black"
       class:bg-black={activeTab === 'editor'}
       class:text-white={activeTab === 'editor'}
     >
       [ FORM CV ]
     </button>
     <button
-      onclick={() => (activeTab = 'preview')}
-      class="py-3 text-center text-[10px] sm:text-xs font-black uppercase border-r border-black"
-      class:bg-black={activeTab === 'preview'}
-      class:text-white={activeTab === 'preview'}
-    >
-      [ PREVIEW CV ]
-    </button>
-    <button
       onclick={() => (activeTab = 'cover-letter')}
-      class="py-3 text-center text-[10px] sm:text-xs font-black uppercase border-r border-black"
+      class="py-3 text-center text-[11px] font-black uppercase border-r border-black"
       class:bg-black={activeTab === 'cover-letter'}
       class:text-white={activeTab === 'cover-letter'}
     >
@@ -322,7 +314,7 @@
     </button>
     <button
       onclick={() => (activeTab = 'ats')}
-      class="py-3 text-center text-[10px] sm:text-xs font-black uppercase"
+      class="py-3 text-center text-[11px] font-black uppercase"
       class:bg-black={activeTab === 'ats'}
       class:text-white={activeTab === 'ats'}
     >
@@ -574,7 +566,7 @@
     <!-- 2. Cover Letter Settings & Content Editor -->
     <div
       class="lg:col-span-6 space-y-6 no-print"
-      class:hidden={activeTab !== 'cover-letter' || clMobileSubTab !== 'form'}
+      class:hidden={activeTab !== 'cover-letter'}
       class:lg:block={activeTab === 'cover-letter'}
     >
       <!-- Target Company & Position -->
@@ -701,14 +693,18 @@
       </div>
     </div>
 
-    <!-- RIGHT COLUMN: Live Preview or ATS Analyzer -->
-    <div class="lg:col-span-6 space-y-6">
+    <!-- RIGHT COLUMN: Live Preview (desktop) / ATS Analyzer -->
+    <div
+      class="lg:col-span-6 space-y-6"
+      class:hidden={activeTab === 'editor' || activeTab === 'cover-letter'}
+      class:lg:block={true}
+    >
       <!-- Desktop Sub-Navigation (Preview CV vs Cover Letter vs ATS) -->
       <div class="hidden lg:flex gap-2 border-b-2 border-black pb-3 no-print">
         <button
           onclick={() => (activeTab = 'editor')}
           class="brutal-btn text-xs py-1.5 px-3"
-          class:brutal-btn-primary={activeTab === 'editor' || activeTab === 'preview'}
+          class:brutal-btn-primary={activeTab === 'editor'}
         >
           <Eye class="w-3.5 h-3.5 mr-1" /> PRATINJAU CV
         </button>
@@ -728,33 +724,10 @@
         </button>
       </div>
 
-      <!-- Mobile Sub-Toggle untuk Cover Letter -->
-      {#if activeTab === 'cover-letter'}
-        <div class="lg:hidden flex border-2 border-black bg-slate-200 mb-2 no-print">
-          <button
-            onclick={() => (clMobileSubTab = 'form')}
-            class="flex-1 py-2 text-center text-xs font-bold uppercase border-r-2 border-black"
-            class:bg-white={clMobileSubTab === 'form'}
-            class:font-black={clMobileSubTab === 'form'}
-          >
-            📝 FORM & EDITOR
-          </button>
-          <button
-            onclick={() => (clMobileSubTab = 'preview')}
-            class="flex-1 py-2 text-center text-xs font-bold uppercase"
-            class:bg-white={clMobileSubTab === 'preview'}
-            class:font-black={clMobileSubTab === 'preview'}
-          >
-            👁️ PRATINJAU A4
-          </button>
-        </div>
-      {/if}
-
-      <!-- CV Preview Panel -->
+      <!-- CV Preview Panel (DESKTOP ONLY — mobile pakai floating action) -->
       <div
-        class="border-4 border-black bg-white shadow-[6px_6px_0px_#000] overflow-hidden"
-        class:hidden={activeTab !== 'preview'}
-        class:lg:block={activeTab !== 'ats' && activeTab !== 'cover-letter'}
+        class="hidden border-4 border-black bg-white shadow-[6px_6px_0px_#000] overflow-hidden"
+        class:lg:block={activeTab === 'editor'}
       >
         <div class="bg-black text-white px-3 sm:px-4 py-2 font-mono text-[10px] sm:text-xs font-bold flex justify-between items-center gap-2 no-print">
           <span class="truncate">PRATINJAU CV // {selectedTemplate.toUpperCase()}</span>
@@ -763,10 +736,9 @@
         <CvRenderer data={cvData} template={selectedTemplate} {sectionOrder} />
       </div>
 
-      <!-- Cover Letter Preview Panel -->
+      <!-- Cover Letter Preview Panel (DESKTOP ONLY — mobile pakai floating action) -->
       <div
-        class="border-4 border-black bg-white shadow-[6px_6px_0px_#000] overflow-hidden"
-        class:hidden={activeTab !== 'cover-letter' || clMobileSubTab !== 'preview'}
+        class="hidden border-4 border-black bg-white shadow-[6px_6px_0px_#000] overflow-hidden"
         class:lg:block={activeTab === 'cover-letter'}
       >
         <div class="bg-black text-white px-3 sm:px-4 py-2 font-mono text-[10px] sm:text-xs font-bold flex justify-between items-center gap-2 no-print">
@@ -902,6 +874,74 @@
     </div>
   </div>
 </div>
+
+<!-- ============================================================
+     MOBILE FLOATING ACTION: Pratinjau A4 + Ekspor PDF
+     Hanya tampil di mobile (lg:hidden) pada tab CV & Surat.
+     Tab ATS tidak memakai floating action.
+     ============================================================ -->
+{#if activeTab === 'editor' || activeTab === 'cover-letter'}
+  <div class="lg:hidden fixed bottom-4 right-4 z-40 flex flex-col items-end gap-2 no-print">
+    <button
+      onclick={() => (previewModal = activeTab === 'cover-letter' ? 'cover-letter' : 'cv')}
+      class="brutal-btn brutal-btn-primary text-xs py-3 px-4 flex items-center gap-2 shadow-[4px_4px_0px_#000]"
+    >
+      <Eye class="w-4 h-4" />
+      {activeTab === 'cover-letter' ? 'PRATINJAU SURAT' : 'PRATINJAU CV'}
+    </button>
+    <button
+      onclick={handleExportPdf}
+      class="brutal-btn brutal-btn-accent text-xs py-3 px-4 flex items-center gap-2 shadow-[4px_4px_0px_#000]"
+    >
+      <Download class="w-4 h-4" /> PDF
+    </button>
+  </div>
+{/if}
+
+<!-- ============================================================
+     MOBILE FULLSCREEN PREVIEW OVERLAY
+     ============================================================ -->
+{#if previewModal !== 'none'}
+  <div class="lg:hidden fixed inset-0 z-[60] bg-slate-900/70 flex flex-col no-print">
+    <!-- Header Overlay -->
+    <div class="bg-black text-white px-3 py-3 flex justify-between items-center gap-2 border-b-4 border-black shrink-0">
+      <span class="font-mono text-xs font-black uppercase truncate">
+        {previewModal === 'cover-letter' ? 'PRATINJAU SURAT' : 'PRATINJAU CV'} // {selectedTemplate.toUpperCase()}
+      </span>
+      <button
+        onclick={() => (previewModal = 'none')}
+        class="bg-white text-black border-2 border-black px-3 py-1 text-xs font-black uppercase shrink-0"
+      >
+        ✕ TUTUP
+      </button>
+    </div>
+
+    <!-- Isi Pratinjau -->
+    <div class="flex-1 overflow-y-auto bg-slate-200">
+      {#if previewModal === 'cover-letter'}
+        <CoverLetterRenderer {cvData} {coverLetter} template={selectedTemplate} />
+      {:else}
+        <CvRenderer data={cvData} template={selectedTemplate} {sectionOrder} />
+      {/if}
+    </div>
+
+    <!-- Footer Aksi -->
+    <div class="bg-black border-t-4 border-black p-3 flex gap-2 shrink-0">
+      <button
+        onclick={() => (previewModal = 'none')}
+        class="brutal-btn text-xs py-2.5 px-4 flex-1 bg-white text-black"
+      >
+        TUTUP
+      </button>
+      <button
+        onclick={previewModal === 'cover-letter' ? exportCoverLetterPrint : exportPrint}
+        class="brutal-btn brutal-btn-accent text-xs py-2.5 px-4 flex-1 flex items-center justify-center gap-1.5"
+      >
+        <Download class="w-4 h-4" /> CETAK PDF
+      </button>
+    </div>
+  </div>
+{/if}
 
 <!-- ============================================================
      Salinan dokumen CV khusus cetak (ukuran A4 asli, tanpa penskalaan).
