@@ -18,6 +18,11 @@ Menggunakan visual style **Neo-Brutalism**: layout tegas, kontras tinggi, border
   - Normalisasi teks dan ekstraksi kata kunci teknis berbasis kamus (bahasa pemrograman, framework, database, cloud, devops, tools).
   - Evaluasi kecocokan keyword terhadap isi CV (*FOUND* vs *MISSING*).
   - Audit struktur dokumen (kontak, pengalaman, pendidikan, skill).
+- **Cover Letter Generator Terintegrasi**:
+  - Menyusun surat lamaran profesional secara instan dari profil CV (pengalaman terbaru, proyek unggulan, keahlian utama) dan target perusahaan/role.
+  - 3 pilihan nada bahasa: Formal (BUMN/Korporat), Modern (Startup/Tech), dan Professional English (Global ATS).
+  - Editor teks interaktif dengan live autosave ke database dan tombol salin ke clipboard.
+  - Pratinjau A4 responsif dan ekspor cetak PDF mandiri berstandar 1:1.
 - **Ekspor PDF Siap Cetak (A4 Standard)**:
   - Output A4 proporsional dengan selectable text (bukan screenshot).
   - Menggunakan engine cetak terisolasi (`print root`), hasil cetak tetap lengkap dari tab mana pun (Form Edit, Cek ATS, atau Pratinjau).

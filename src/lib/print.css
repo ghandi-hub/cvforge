@@ -13,7 +13,8 @@
 
 /* Di layar: salinan khusus cetak tidak pernah tampil */
 @media screen {
-  .cv-print-root {
+  .cv-print-root,
+  .cl-print-root {
     display: none !important;
   }
 }
@@ -28,6 +29,9 @@
     print-color-adjust: exact;
   }
 
+  /* ============================================================
+     1. CETAK CV DOKUMEN
+     ============================================================ */
   /* Sembunyikan seluruh UI aplikasi (header, tab, form, panel ATS) */
   body.printing-cv .cv-app-ui {
     display: none !important;
@@ -91,6 +95,59 @@
   body.printing-cv .cv-print-root a {
     color: #000000 !important;
     text-decoration: none !important;
+  }
+
+  /* ============================================================
+     2. CETAK SURAT LAMARAN (COVER LETTER)
+     ============================================================ */
+  body.printing-cl .cv-app-ui {
+    display: none !important;
+  }
+
+  body.printing-cl .cl-print-root {
+    display: block !important;
+  }
+
+  body.printing-cl .cl-print-root .cl-preview-wrapper {
+    display: block !important;
+    position: static !important;
+    width: auto !important;
+    max-width: none !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: #ffffff !important;
+    overflow: visible !important;
+  }
+
+  body.printing-cl .cl-print-root .cl-print-area {
+    position: static !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    transform: none !important;
+    overflow: visible !important;
+  }
+
+  body.printing-cl .cl-print-root .cl-print-area > * {
+    width: 210mm !important;
+    max-width: 210mm !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    transform: none !important;
+  }
+
+  body.printing-cl .cl-print-root header,
+  body.printing-cl .cl-print-root main,
+  body.printing-cl .cl-print-root footer,
+  body.printing-cl .cl-print-root p {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 
   .no-print {

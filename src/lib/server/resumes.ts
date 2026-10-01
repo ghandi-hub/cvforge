@@ -17,6 +17,15 @@ export async function getUserResumes(userId: string): Promise<any[]> {
     template: doc.template,
     sectionOrder: doc.sectionOrder,
     data: doc.data,
+    coverLetter: doc.coverLetter || {
+      recipientName: 'Hiring Manager',
+      companyName: '',
+      companyLocation: '',
+      jobTitle: '',
+      letterDate: '',
+      tone: 'formal-id',
+      content: ''
+    },
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt
   }));
@@ -40,6 +49,15 @@ export async function getResumeById(id: string, userId: string): Promise<any | n
     template: doc.template,
     sectionOrder: doc.sectionOrder,
     data: doc.data,
+    coverLetter: doc.coverLetter || {
+      recipientName: 'Hiring Manager',
+      companyName: '',
+      companyLocation: '',
+      jobTitle: '',
+      letterDate: '',
+      tone: 'formal-id',
+      content: ''
+    },
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt
   };
@@ -80,6 +98,15 @@ export async function createResume(userId: string, title = 'Untitled CV'): Promi
       certifications: [],
       languages: []
     },
+    coverLetter: {
+      recipientName: 'Hiring Manager',
+      companyName: '',
+      companyLocation: '',
+      jobTitle: '',
+      letterDate: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
+      tone: 'formal-id',
+      content: ''
+    },
     createdAt: now,
     updatedAt: now
   };
@@ -117,6 +144,15 @@ export async function updateResume(id: string, userId: string, updates: Partial<
     template: res.template,
     sectionOrder: res.sectionOrder,
     data: res.data,
+    coverLetter: res.coverLetter || {
+      recipientName: 'Hiring Manager',
+      companyName: '',
+      companyLocation: '',
+      jobTitle: '',
+      letterDate: '',
+      tone: 'formal-id',
+      content: ''
+    },
     createdAt: res.createdAt,
     updatedAt: res.updatedAt
   };
@@ -134,6 +170,7 @@ export async function duplicateResume(id: string, userId: string): Promise<any |
     template: original.template,
     sectionOrder: original.sectionOrder,
     data: original.data,
+    coverLetter: original.coverLetter,
     createdAt: now,
     updatedAt: now
   };

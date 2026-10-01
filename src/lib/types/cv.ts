@@ -82,6 +82,16 @@ export const CVDataSchema = z.object({
   languages: z.array(LanguageItemSchema).default([])
 });
 
+export const CoverLetterSchema = z.object({
+  recipientName: z.string().default('Hiring Manager'),
+  companyName: z.string().default(''),
+  companyLocation: z.string().default(''),
+  jobTitle: z.string().default(''),
+  letterDate: z.string().default(''),
+  tone: z.enum(['formal-id', 'modern-id', 'professional-en']).default('formal-id'),
+  content: z.string().default('')
+});
+
 export const ResumeSchema = z.object({
   id: z.string().optional(),
   userId: z.string(),
@@ -96,6 +106,7 @@ export const ResumeSchema = z.object({
     'languages'
   ]),
   data: CVDataSchema.default({}),
+  coverLetter: CoverLetterSchema.default({}),
   createdAt: z.date().or(z.string()).default(() => new Date()),
   updatedAt: z.date().or(z.string()).default(() => new Date())
 });
@@ -109,4 +120,5 @@ export type CertificationItem = z.infer<typeof CertificationItemSchema>;
 export type LanguageItem = z.infer<typeof LanguageItemSchema>;
 export type SectionType = z.infer<typeof SectionTypeSchema>;
 export type CVData = z.infer<typeof CVDataSchema>;
+export type CoverLetter = z.infer<typeof CoverLetterSchema>;
 export type Resume = z.infer<typeof ResumeSchema>;

@@ -1,17 +1,33 @@
 <script lang="ts">
   import {
     Save, ArrowLeft, Download, Search, Layout, FileText, CheckCircle2,
-    Plus, Trash2, GripVertical, AlertTriangle, Eye, RefreshCw
+    Plus, Trash2, GripVertical, AlertTriangle, Eye, RefreshCw, Mail,
+    Copy, Check, Sparkles
   } from 'lucide-svelte';
   import CvRenderer from '$lib/components/CvRenderer.svelte';
-  import type { Resume, CVData, SectionType } from '$lib/types/cv';
+  import CoverLetterRenderer from '$lib/components/CoverLetterRenderer.svelte';
+  import { generateCoverLetterText } from '$lib/cover-letter/generator';
+  import type { Resume, CVData, SectionType, CoverLetter } from '$lib/types/cv';
 
   let { data }: { data: any } = $props();
 
   // State
   let resume = $state<Resume>(data.resume);
   let cvData = $state<CVData>(data.resume.data || {});
-  let activeTab = $state<'editor' | 'preview' | 'ats'>('editor');
+  let coverLetter = $state<CoverLetter>(
+    resume.coverLetter || {
+      recipientName: 'Hiring Manager',
+      companyName: '',
+      companyLocation: '',
+      jobTitle: '',
+      letterDate: '',
+      tone: 'formal-id',
+      content: ''
+    }
+  );
+  let activeTab = $state<'editor' | 'preview' | 'cover-letter' | 'ats'>('editor');
+  let clMobileSubTab = $state<'form' | 'preview'>('form');
+  let copySuccess = $state(false);
   let saveStatus = $state<'saved' | 'saving' | 'error'>('saved');
   let selectedTemplate = $state(resume.template || 'ats-classic');
   let sectionOrder = $state<SectionType[]>(resume.sectionOrder || [
@@ -37,7 +53,8 @@
             title: resume.title,
             template: selectedTemplate,
             sectionOrder,
-            data: cvData
+            data: cvData,
+            coverLetter
           })
         });
         if (res.ok) {
@@ -49,6 +66,35 @@
         saveStatus = 'error';
       }
     }, 1200);
+  }
+
+  // Cover Letter generation & copy
+  function handleGenerateCoverLetter() {
+    const generated = generateCoverLetterText({
+      cvData,
+      recipientName: coverLetter.recipientName,
+      companyName: coverLetter.companyName,
+      companyLocation: coverLetter.companyLocation,
+      jobTitle: coverLetter.jobTitle,
+      letterDate: coverLetter.letterDate,
+      tone: coverLetter.tone,
+      jobDescription
+    });
+    coverLetter.content = generated;
+    triggerAutosave();
+  }
+
+  async function handleCopyCoverLetter() {
+    if (!coverLetter.content) return;
+    try {
+      await navigator.clipboard.writeText(coverLetter.content);
+      copySuccess = true;
+      setTimeout(() => {
+        copySuccess = false;
+      }, 2000);
+    } catch {
+      alert('Gagal menyalin teks ke clipboard.');
+    }
   }
 
   // Section additions
@@ -178,8 +224,27 @@
     };
     window.addEventListener('afterprint', cleanup);
     window.print();
-    // Fallback untuk browser yang tidak memicu afterprint
     setTimeout(cleanup, 2000);
+  }
+
+  // Cetak / ekspor PDF untuk Surat Lamaran
+  function exportCoverLetterPrint() {
+    document.body.classList.add('printing-cl');
+    const cleanup = () => {
+      document.body.classList.remove('printing-cl');
+      window.removeEventListener('afterprint', cleanup);
+    };
+    window.addEventListener('afterprint', cleanup);
+    window.print();
+    setTimeout(cleanup, 2000);
+  }
+
+  function handleExportPdf() {
+    if (activeTab === 'cover-letter') {
+      exportCoverLetterPrint();
+    } else {
+      exportPrint();
+    }
   }
 </script>
 
@@ -222,48 +287,56 @@
           <option value="ats-brutalist">Template: ATS Brutalist</option>
         </select>
 
-        <button onclick={exportPrint} class="brutal-btn brutal-btn-accent text-xs py-2 px-3 sm:px-4 flex items-center gap-1.5 whitespace-nowrap">
-          <Download class="w-4 h-4" /> <span class="hidden xs:inline sm:inline">CETAK / </span>PDF
+        <button onclick={handleExportPdf} class="brutal-btn brutal-btn-accent text-xs py-2 px-3 sm:px-4 flex items-center gap-1.5 whitespace-nowrap">
+          <Download class="w-4 h-4" /> <span class="hidden xs:inline sm:inline">CETAK / </span>PDF {activeTab === 'cover-letter' ? 'SURAT' : 'CV'}
         </button>
       </div>
     </div>
   </header>
 
-  <!-- Mobile View Toggle Tabs -->
-  <div class="lg:hidden flex border-b-2 border-black bg-white no-print">
+  <!-- Mobile View Toggle Tabs (4 Tab) -->
+  <div class="lg:hidden grid grid-cols-4 border-b-2 border-black bg-white no-print">
     <button
       onclick={() => (activeTab = 'editor')}
-      class="flex-1 py-3 text-center text-xs font-black uppercase border-r border-black"
+      class="py-3 text-center text-[10px] sm:text-xs font-black uppercase border-r border-black"
       class:bg-black={activeTab === 'editor'}
       class:text-white={activeTab === 'editor'}
     >
-      [ FORM EDIT ]
+      [ FORM CV ]
     </button>
     <button
       onclick={() => (activeTab = 'preview')}
-      class="flex-1 py-3 text-center text-xs font-black uppercase border-r border-black"
+      class="py-3 text-center text-[10px] sm:text-xs font-black uppercase border-r border-black"
       class:bg-black={activeTab === 'preview'}
       class:text-white={activeTab === 'preview'}
     >
-      [ PRATINJAU ]
+      [ PREVIEW CV ]
+    </button>
+    <button
+      onclick={() => (activeTab = 'cover-letter')}
+      class="py-3 text-center text-[10px] sm:text-xs font-black uppercase border-r border-black"
+      class:bg-black={activeTab === 'cover-letter'}
+      class:text-white={activeTab === 'cover-letter'}
+    >
+      [ SURAT ]
     </button>
     <button
       onclick={() => (activeTab = 'ats')}
-      class="flex-1 py-3 text-center text-xs font-black uppercase"
+      class="py-3 text-center text-[10px] sm:text-xs font-black uppercase"
       class:bg-black={activeTab === 'ats'}
       class:text-white={activeTab === 'ats'}
     >
-      [ CEK ATS ]
+      [ ATS ]
     </button>
   </div>
 
   <!-- Workspace Container -->
   <div class="max-w-7xl mx-auto w-full flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 p-4 lg:p-6 items-start">
-    <!-- LEFT COLUMN: Forms Editor -->
+    <!-- LEFT COLUMN: Forms Editor (CV Forms) -->
     <div
       class="lg:col-span-6 space-y-6 no-print"
       class:hidden={activeTab !== 'editor'}
-      class:lg:block={true}
+      class:lg:block={activeTab !== 'cover-letter'}
     >
       <!-- Personal Info -->
       <div class="brutal-card p-5 bg-white space-y-4">
@@ -498,37 +571,221 @@
       </div>
     </div>
 
+    <!-- 2. Cover Letter Settings & Content Editor -->
+    <div
+      class="lg:col-span-6 space-y-6 no-print"
+      class:hidden={activeTab !== 'cover-letter' || clMobileSubTab !== 'form'}
+      class:lg:block={activeTab === 'cover-letter'}
+    >
+      <!-- Target Company & Position -->
+      <div class="brutal-card p-5 bg-white space-y-4">
+        <div class="border-b-2 border-black pb-2 flex justify-between items-center">
+          <h2 class="font-black text-sm uppercase tracking-wider flex items-center gap-2">
+            <Mail class="w-4 h-4 text-emerald-600" /> TARGET LAMARAN KERJA
+          </h2>
+          <span class="text-[10px] font-mono font-bold bg-yellow-100 text-yellow-900 border border-black px-2 py-0.5">
+            SINKRON CV
+          </span>
+        </div>
+
+        <p class="text-xs text-slate-600">
+          Masukkan detail posisi dan perusahaan tujuan. Generator akan mengombinasikan profil CV Anda untuk menyusun surat lamaran profesional secara instan.
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="text-[11px] font-bold uppercase block mb-1">Nama Perusahaan Target</label>
+            <input
+              type="text"
+              bind:value={coverLetter.companyName}
+              oninput={triggerAutosave}
+              placeholder="PT Bank Central Asia Tbk"
+              class="brutal-input text-xs"
+            />
+          </div>
+          <div>
+            <label class="text-[11px] font-bold uppercase block mb-1">Posisi / Role yang Dilamar</label>
+            <input
+              type="text"
+              bind:value={coverLetter.jobTitle}
+              oninput={triggerAutosave}
+              placeholder="Senior Frontend Engineer"
+              class="brutal-input text-xs"
+            />
+          </div>
+          <div>
+            <label class="text-[11px] font-bold uppercase block mb-1">Nama Penerima / Pihak Tertuju</label>
+            <input
+              type="text"
+              bind:value={coverLetter.recipientName}
+              oninput={triggerAutosave}
+              placeholder="Tim Rekrutmen / Hiring Manager"
+              class="brutal-input text-xs"
+            />
+          </div>
+          <div>
+            <label class="text-[11px] font-bold uppercase block mb-1">Lokasi Perusahaan</label>
+            <input
+              type="text"
+              bind:value={coverLetter.companyLocation}
+              oninput={triggerAutosave}
+              placeholder="Jakarta Selatan, Indonesia"
+              class="brutal-input text-xs"
+            />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="text-[11px] font-bold uppercase block mb-1">Tanggal Surat</label>
+            <input
+              type="text"
+              bind:value={coverLetter.letterDate}
+              oninput={triggerAutosave}
+              placeholder="30 September 2026"
+              class="brutal-input text-xs"
+            />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="text-[11px] font-bold uppercase block mb-1">Gaya Bahasa & Nada Bicara</label>
+            <select
+              bind:value={coverLetter.tone}
+              onchange={triggerAutosave}
+              class="brutal-input text-xs font-bold"
+            >
+              <option value="formal-id">Formal & Profesional (Standar BUMN / Korporat)</option>
+              <option value="modern-id">Modern & Dinamis (Startup / Tech Company)</option>
+              <option value="professional-en">Professional English (Global ATS Standard)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="pt-2 flex flex-col sm:flex-row gap-2">
+          <button
+            onclick={handleGenerateCoverLetter}
+            class="brutal-btn brutal-btn-accent text-xs py-2.5 px-4 flex items-center justify-center gap-1.5 flex-1"
+          >
+            <Sparkles class="w-4 h-4" /> GENERATE DARI DATA CV
+          </button>
+          <button
+            onclick={handleCopyCoverLetter}
+            disabled={!coverLetter.content}
+            class="brutal-btn text-xs py-2.5 px-4 flex items-center justify-center gap-1.5"
+          >
+            {#if copySuccess}
+              <Check class="w-4 h-4 text-emerald-600" /> TERSALIN!
+            {:else}
+              <Copy class="w-4 h-4" /> SALIN TEKS
+            {/if}
+          </button>
+        </div>
+      </div>
+
+      <!-- Content Textarea Editor -->
+      <div class="brutal-card p-5 bg-white space-y-3">
+        <div class="flex justify-between items-center border-b-2 border-black pb-2">
+          <label class="font-black text-xs uppercase tracking-wider flex items-center gap-1.5">
+            <FileText class="w-4 h-4 text-blue-600" /> ISI SURAT LAMARAN (EDIT LANGSUNG)
+          </label>
+          <span class="text-[10px] font-mono font-bold text-slate-500">
+            {coverLetter.content ? `${coverLetter.content.length} Karakter` : 'Kosong'}
+          </span>
+        </div>
+        <textarea
+          bind:value={coverLetter.content}
+          oninput={triggerAutosave}
+          rows="15"
+          placeholder="Tulis atau hasilkan isi surat lamaran di sini..."
+          class="brutal-input text-xs leading-relaxed font-mono w-full"
+        ></textarea>
+        <p class="text-[11px] text-slate-500 font-medium">
+          💡 Setiap paragraf dipisahkan dengan baris kosong (Enter 2x). Pratinjau A4 di sebelah kanan diperbarui secara instan.
+        </p>
+      </div>
+    </div>
+
     <!-- RIGHT COLUMN: Live Preview or ATS Analyzer -->
     <div class="lg:col-span-6 space-y-6">
-      <!-- Desktop Sub-Navigation (Preview vs ATS) -->
+      <!-- Desktop Sub-Navigation (Preview CV vs Cover Letter vs ATS) -->
       <div class="hidden lg:flex gap-2 border-b-2 border-black pb-3 no-print">
         <button
           onclick={() => (activeTab = 'editor')}
-          class="brutal-btn text-xs py-1.5 px-4"
-          class:brutal-btn-primary={activeTab !== 'ats'}
+          class="brutal-btn text-xs py-1.5 px-3"
+          class:brutal-btn-primary={activeTab === 'editor' || activeTab === 'preview'}
         >
-          <Eye class="w-3.5 h-3.5 mr-1" /> PRATINJAU DOKUMEN
+          <Eye class="w-3.5 h-3.5 mr-1" /> PRATINJAU CV
+        </button>
+        <button
+          onclick={() => (activeTab = 'cover-letter')}
+          class="brutal-btn text-xs py-1.5 px-3"
+          class:brutal-btn-primary={activeTab === 'cover-letter'}
+        >
+          <Mail class="w-3.5 h-3.5 mr-1" /> SURAT LAMARAN
         </button>
         <button
           onclick={() => (activeTab = 'ats')}
-          class="brutal-btn text-xs py-1.5 px-4"
+          class="brutal-btn text-xs py-1.5 px-3"
           class:brutal-btn-primary={activeTab === 'ats'}
         >
-          <Search class="w-3.5 h-3.5 mr-1" /> ANALYZER KATA KUNCI ATS
+          <Search class="w-3.5 h-3.5 mr-1" /> CEK ATS
         </button>
       </div>
 
-      <!-- Preview Panel -->
+      <!-- Mobile Sub-Toggle untuk Cover Letter -->
+      {#if activeTab === 'cover-letter'}
+        <div class="lg:hidden flex border-2 border-black bg-slate-200 mb-2 no-print">
+          <button
+            onclick={() => (clMobileSubTab = 'form')}
+            class="flex-1 py-2 text-center text-xs font-bold uppercase border-r-2 border-black"
+            class:bg-white={clMobileSubTab === 'form'}
+            class:font-black={clMobileSubTab === 'form'}
+          >
+            📝 FORM & EDITOR
+          </button>
+          <button
+            onclick={() => (clMobileSubTab = 'preview')}
+            class="flex-1 py-2 text-center text-xs font-bold uppercase"
+            class:bg-white={clMobileSubTab === 'preview'}
+            class:font-black={clMobileSubTab === 'preview'}
+          >
+            👁️ PRATINJAU A4
+          </button>
+        </div>
+      {/if}
+
+      <!-- CV Preview Panel -->
       <div
         class="border-4 border-black bg-white shadow-[6px_6px_0px_#000] overflow-hidden"
         class:hidden={activeTab !== 'preview'}
-        class:lg:block={activeTab !== 'ats'}
+        class:lg:block={activeTab !== 'ats' && activeTab !== 'cover-letter'}
       >
         <div class="bg-black text-white px-3 sm:px-4 py-2 font-mono text-[10px] sm:text-xs font-bold flex justify-between items-center gap-2 no-print">
-          <span class="truncate">PRATINJAU // {selectedTemplate.toUpperCase()}</span>
+          <span class="truncate">PRATINJAU CV // {selectedTemplate.toUpperCase()}</span>
           <span class="text-slate-400 shrink-0">A4</span>
         </div>
         <CvRenderer data={cvData} template={selectedTemplate} {sectionOrder} />
+      </div>
+
+      <!-- Cover Letter Preview Panel -->
+      <div
+        class="border-4 border-black bg-white shadow-[6px_6px_0px_#000] overflow-hidden"
+        class:hidden={activeTab !== 'cover-letter' || clMobileSubTab !== 'preview'}
+        class:lg:block={activeTab === 'cover-letter'}
+      >
+        <div class="bg-black text-white px-3 sm:px-4 py-2 font-mono text-[10px] sm:text-xs font-bold flex justify-between items-center gap-2 no-print">
+          <span class="truncate">PRATINJAU SURAT // {selectedTemplate.toUpperCase()}</span>
+          <div class="flex items-center gap-2">
+            <button
+              onclick={exportCoverLetterPrint}
+              class="bg-yellow-400 text-black px-2 py-0.5 text-[10px] font-black uppercase hover:bg-yellow-300"
+            >
+              CETAK PDF
+            </button>
+            <span class="text-slate-400 shrink-0">A4</span>
+          </div>
+        </div>
+        <CoverLetterRenderer
+          {cvData}
+          {coverLetter}
+          template={selectedTemplate}
+        />
       </div>
 
       <!-- ATS Analyzer Panel -->
@@ -653,4 +910,16 @@
      ============================================================ -->
 <div class="cv-print-root" aria-hidden="true">
   <CvRenderer data={cvData} template={selectedTemplate} {sectionOrder} staticSize />
+</div>
+
+<!-- ============================================================
+     Salinan surat lamaran khusus cetak (ukuran A4 asli, tanpa penskalaan).
+     ============================================================ -->
+<div class="cl-print-root" aria-hidden="true">
+  <CoverLetterRenderer
+    {cvData}
+    {coverLetter}
+    template={selectedTemplate}
+    staticSize
+  />
 </div>
